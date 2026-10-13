@@ -1429,5 +1429,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   document.getElementById('btnResetData').addEventListener('click', resetAllData);
 
+  startHeroPhotoCarousel();
   renderAll();
 });
+
+function startHeroPhotoCarousel() {
+  const carousel = document.querySelector('.hero-photo-carousel');
+  if (!carousel) return;
+
+  const photos = [...carousel.querySelectorAll('.hero-photo')];
+  if (photos.length < 2) return;
+
+  let currentIndex = 0;
+
+  const render = (index) => {
+    photos.forEach((photo, photoIndex) => {
+      const isActive = photoIndex === index;
+      const isPrev = photoIndex === (index - 1 + photos.length) % photos.length;
+      photo.classList.toggle('active', isActive);
+      photo.classList.toggle('prev', isPrev && !isActive);
+      photo.setAttribute('aria-hidden', String(!isActive));
+    });
+  };
+
+  render(currentIndex);
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % photos.length;
+    render(currentIndex);
+  }, 2800);
+}
