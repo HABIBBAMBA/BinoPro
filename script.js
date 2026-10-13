@@ -1434,8 +1434,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function startHeroPhotoCarousel() {
+  const heroCard = document.querySelector('.hero-card');
   const carousel = document.querySelector('.hero-photo-carousel');
-  if (!carousel) return;
+  if (!heroCard || !carousel) return;
 
   const photos = [...carousel.querySelectorAll('.hero-photo')];
   if (photos.length < 2) return;
@@ -1443,13 +1444,14 @@ function startHeroPhotoCarousel() {
   let currentIndex = 0;
 
   const render = (index) => {
-    photos.forEach((photo, photoIndex) => {
-      const isActive = photoIndex === index;
-      const isPrev = photoIndex === (index - 1 + photos.length) % photos.length;
-      photo.classList.toggle('active', isActive);
-      photo.classList.toggle('prev', isPrev && !isActive);
-      photo.setAttribute('aria-hidden', String(!isActive));
-    });
+    const photo = photos[index];
+    if (!photo) return;
+
+    const imageUrl = photo.getAttribute('src');
+    heroCard.style.backgroundImage = `linear-gradient(120deg, rgba(16, 24, 40, .82), rgba(44, 39, 98, .7)), url('${imageUrl}')`;
+    heroCard.style.backgroundSize = 'cover';
+    heroCard.style.backgroundPosition = 'center';
+    heroCard.style.backgroundRepeat = 'no-repeat';
   };
 
   render(currentIndex);

@@ -519,7 +519,10 @@ code {
 
 .hero-card {
   position: relative;
-  background: linear-gradient(120deg, #101828 0%, #1B2A5B 48%, #4C2FBF 100%);
+  background-image: linear-gradient(120deg, rgba(16, 24, 40, .8), rgba(44, 39, 98, .72)), url('photo/hero/IMG_0546.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 26px;
   padding: 44px 46px;
   color: #fff;
@@ -529,6 +532,15 @@ code {
   display: flex;
   align-items: center;
   gap: 30px;
+  transition: background-image .9s ease;
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(20, 18, 49, .75) 0%, rgba(36, 32, 71, .45) 36%, rgba(36, 32, 71, .18) 100%);
+  z-index: 0;
 }
 
 .hero-card::after {
@@ -543,46 +555,15 @@ code {
 }
 
 .hero-photo-carousel {
-  position: relative;
-  z-index: 2;
-  width: min(42vw, 620px);
-  min-width: 300px;
-  max-width: 100%;
-  min-height: 360px;
-  height: clamp(320px, 32vw, 440px);
-  margin-left: auto;
-  padding: 0;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, .05);
-  border: 1px solid rgba(255, 255, 255, .14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 18px 36px rgba(11, 17, 35, .22);
-  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .hero-photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 24px;
-  opacity: 0;
-  transform: scale(1.12) translateX(18px);
-  transition: opacity .9s ease, transform 1.8s ease, filter .9s ease;
-  filter: saturate(1.08) contrast(1.04) brightness(.75);
-  box-shadow: 0 18px 32px rgba(15, 23, 42, .28);
-}
-
-.hero-photo.active {
-  opacity: 1;
-  transform: scale(1.04) translateX(0);
-  filter: saturate(1.14) contrast(1.08) brightness(.9);
-}
-
-.hero-photo.prev {
-  opacity: .2;
-  transform: scale(1.02) translateX(-18px);
-  filter: saturate(.7) contrast(.9) brightness(.72);
+  display: none;
 }
 
 .hero-content {
