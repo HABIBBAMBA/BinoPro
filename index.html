@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BinoPro — application de binômage parrains / filleuls, 100% locale.">
+  <title>BinoPro ; Filleulage</title>
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <!-- Typographie moderne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 + Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Feuille de style du projet -->
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- ============================================================
+       SIDEBAR — navigation principale
+       ============================================================ -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigation principale">
+      <div class="brand">
+        <div class="brand-mark"><img src="logo.png" alt=""></div>
+        <div class="brand-text">
+          <span class="brand-name">BinoPro</span>
+          <span class="brand-sub">Parrainage &amp; Filleulage</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <p class="nav-label">Général</p>
+        <button class="nav-item active" data-view="dashboard">
+          <i class="bi bi-grid-1x2"></i><span>Tableau de bord</span>
+        </button>
+
+        <p class="nav-label">Participants</p>
+        <button class="nav-item" data-view="parrains">
+          <i class="bi bi-person-badge"></i><span>Parrains</span>
+          <span class="nav-count" id="navCountSponsors">0</span>
+        </button>
+        <button class="nav-item" data-view="filleuls">
+          <i class="bi bi-person-heart"></i><span>Filleuls</span>
+          <span class="nav-count" id="navCountGc">0</span>
+        </button>
+
+        <p class="nav-label">Processus</p>
+        <button class="nav-item" data-view="binomage">
+          <i class="bi bi-shuffle"></i><span>Binômage</span>
+        </button>
+        <button class="nav-item" data-view="resultats">
+          <i class="bi bi-trophy"></i><span>Résultats</span>
+          <span class="nav-count" id="navCountPairs">0</span>
+        </button>
+
+        <p class="nav-label">Système</p>
+        <button class="nav-item" data-view="donnees">
+          <i class="bi bi-database"></i><span>Données &amp; sauvegarde</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="storage-chip">
+          <i class="bi bi-hdd"></i>
+          <span id="sidebarStorage">Stockage navigateur</span>
+        </div>
+      </div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- ============================================================
+       ZONE PRINCIPALE
+       ============================================================ -->
+    <div class="app-main">
+
+      <!-- Barre supérieure -->
+      <header class="topbar">
+        <button class="icon-btn d-lg-none" id="sidebarToggle" aria-label="Ouvrir le menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="topbar-title">
+          <h1 id="pageTitle">Tableau de bord</h1>
+          <p id="pageSubtitle">Vue d'ensemble du binômage</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="topbar-chip d-none d-md-flex">
+            <i class="bi bi-people"></i><span id="topParticipants">0 participant</span>
+          </div>
+          <button class="btn-grad" id="topDrawBtn">
+            <i class="bi bi-shuffle"></i><span class="d-none d-sm-inline">Démarrer le binômage</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Contenu : chaque <section> est une "vue" affichée/masquée par JS -->
+      <main class="app-content">
+
+        <!-- ========================================================
+           VUE 1 — TABLEAU DE BORD
+           ======================================================== -->
+        <section id="view-dashboard" class="view">
+
+          <!-- Hero -->
+          <div class="hero-card">
+            <div class="hero-content">
+              <span class="hero-eyebrow"><i class="bi bi-stars"></i> Tirage aléatoire équitable</span>
+              <h2>Constituez vos binômes<br>parrains / filleuls en un clic</h2>
+              <p>
+                Importez vos participants, lancez le tirage animé, puis exportez les résultats
+                en CSV ou à l'impression. Aucune donnée ne quitte votre navigateur.
+              </p>
+              <div class="hero-actions">
+                <button class="btn-grad btn-lg" id="btnStartDraw">
+                  <i class="bi bi-shuffle"></i> Démarrer le binômage
+                </button>
+                <button class="btn-ghost-light btn-lg" data-view="parrains">
+                  <i class="bi bi-person-badge"></i> Gérer les parrains
+                </button>
+                <button class="btn-ghost-light btn-lg" data-view="filleuls">
+                  <i class="bi bi-person-heart"></i> Gérer les filleuls
+                </button>
+                <button class="btn-ghost-light btn-lg" data-view="resultats">
+                  <i class="bi bi-trophy"></i> Consulter les résultats
+                </button>
+              </div>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+              <div class="hero-orbit">
+                <div class="hero-avatar a1"></div>
+                <div class="hero-avatar a2"></div>
+                <div class="hero-avatar a3"></div>
+                <div class="hero-avatar a4"></div>
+                <div class="hero-core"><i class="bi bi-link-45deg"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistiques -->
+          <div class="row g-3 g-xl-4">
+            <div class="col-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon si-blue"><i class="bi bi-person-badge"></i></div>
+                <div class="stat-body">
+                  <span class="stat-label">Parrains</span>
+                  <span class="stat-value" id="statSponsors">0</span>
+                  <span class="stat-hint" id="statSponsorsHint">Aucun parrain enregistré</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon si-violet"><i class="bi bi-person-heart"></i></div>
+                <div class="stat-body">
+                  <span class="stat-label">Filleuls</span>
+                  <span class="stat-value" id="statGc">0</span>
+                  <span class="stat-hint" id="statGcHint">Aucun filleul enregistré</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon si-green"><i class="bi bi-people"></i></div>
+                <div class="stat-body">
+                  <span class="stat-label">Binômes constitués</span>
+                  <span class="stat-value" id="statPairs">0</span>
+                  <span class="stat-hint" id="statPairsHint">Tirage non effectué</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-xl-3">
+              <div class="stat-card">
+                <div class="stat-icon si-orange"><i class="bi bi-hourglass-split"></i></div>
+                <div class="stat-body">
+                  <span class="stat-label">Restant à attribuer</span>
+                  <span class="stat-value" id="statRemaining">0</span>
+                  <span class="stat-hint" id="statRemainingHint">Participants sans binôme</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progression + derniers binômes -->
+          <div class="row g-3 g-xl-4 mt-1">
+            <div class="col-lg-5">
+              <div class="panel h-100">
+                <div class="panel-head">
+                  <h3><i class="bi bi-graph-up"></i> Progression du binômage</h3>
+                </div>
+                <div class="panel-body">
+                  <div class="progress-labels">
+                    <span>Attribution des participants</span>
+                    <strong id="progressText">0 %</strong>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                  </div>
+                  <div class="progress-legend">
+                    <span><i class="bi bi-circle-fill text-primary"></i> Appariés : <b id="legendPaired">0</b></span>
+                    <span><i class="bi bi-circle-fill text-secondary"></i> À attribuer : <b
+                        id="legendPending">0</b></span>
+                  </div>
+                  <div class="mini-alert" id="drawReadiness">
+                    <i class="bi bi-info-circle"></i><span>Chargez des parrains et des filleuls pour démarrer.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-7">
+              <div class="panel h-100">
+                <div class="panel-head">
+                  <h3><i class="bi bi-clock-history"></i> Derniers binômes</h3>
+                  <button class="btn-ghost" data-view="resultats">Tout voir <i class="bi bi-arrow-right"></i></button>
+                </div>
+                <div class="panel-body">
+                  <div class="recent-list" id="recentPairs"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+           VUE 2 — PARRAINS
+           ======================================================== -->
+        <section id="view-parrains" class="view d-none">
+          <div class="page-actions">
+            <div>
+              <h2 class="page-title">Gestion des parrains</h2>
+              <p class="page-desc">Ajoutez, modifiez ou importez vos parrains (photo, nom, identifiant, filière).</p>
+            </div>
+            <div class="action-group">
+              <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="search" id="searchSponsors" class="form-control" placeholder="Rechercher un parrain…">
+              </div>
+              <button class="btn-ghost" id="btnMultiSponsor"><i class="bi bi-list-ul"></i> Ajout rapide</button>
+              <button class="btn-ghost" id="btnImportSponsor"><i class="bi bi-filetype-csv"></i> Importer CSV</button>
+              <button class="btn-grad" id="btnAddSponsor"><i class="bi bi-plus-lg"></i> Ajouter un parrain</button>
+            </div>
+          </div>
+          <div class="grid-cards" id="gridSponsors"></div>
+          <div class="empty-state d-none" id="emptySponsors">
+            <div class="empty-icon"><i class="bi bi-person-badge"></i></div>
+            <h4>Aucun parrain pour le moment</h4>
+            <p>Ajoutez votre premier parrain ou importez une liste CSV.</p>
+            <button class="btn-grad" id="btnAddSponsorEmpty"><i class="bi bi-plus-lg"></i> Ajouter un parrain</button>
+          </div>
+        </section>
+
+        <!-- ========================================================
+           VUE 3 — FILLEULS
+           ======================================================== -->
+        <section id="view-filleuls" class="view d-none">
+          <div class="page-actions">
+            <div>
+              <h2 class="page-title">Gestion des filleuls</h2>
+              <p class="page-desc">Ajoutez, modifiez ou importez vos filleuls (photo, nom, identifiant, filière).</p>
+            </div>
+            <div class="action-group">
+              <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="search" id="searchGc" class="form-control" placeholder="Rechercher un filleul…">
+              </div>
+              <button class="btn-ghost" id="btnMultiGc"><i class="bi bi-list-ul"></i> Ajout rapide</button>
+              <button class="btn-ghost" id="btnImportGc"><i class="bi bi-filetype-csv"></i> Importer CSV</button>
+              <button class="btn-grad" id="btnAddGc"><i class="bi bi-plus-lg"></i> Ajouter un filleul</button>
+            </div>
+          </div>
+          <div class="grid-cards" id="gridGc"></div>
+          <div class="empty-state d-none" id="emptyGc">
+            <div class="empty-icon"><i class="bi bi-person-heart"></i></div>
+            <h4>Aucun filleul pour le moment</h4>
+            <p>Ajoutez votre premier filleul ou importez une liste CSV.</p>
+            <button class="btn-grad" id="btnAddGcEmpty"><i class="bi bi-plus-lg"></i> Ajouter un filleul</button>
+          </div>
+        </section>
+
+        <!-- ========================================================
+           VUE 4 — BINÔMAGE
+           ======================================================== -->
+        <section id="view-binomage" class="view d-none">
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <div class="panel">
+                <div class="panel-head">
+                  <h3><i class="bi bi-clipboard2-check"></i> Récapitulatif avant tirage</h3>
+                </div>
+                <div class="panel-body">
+                  <div class="recap-grid">
+                    <div class="recap-item">
+                      <span class="recap-num" id="recapSponsors">0</span>
+                      <span class="recap-label">Parrains</span>
+                    </div>
+                    <div class="recap-item">
+                      <span class="recap-num" id="recapGc">0</span>
+                      <span class="recap-label">Filleuls</span>
+                    </div>
+                    <div class="recap-item">
+                      <span class="recap-num" id="recapPossible">0</span>
+                      <span class="recap-label">Binômes possibles</span>
+                    </div>
+                  </div>
+
+                  <div class="mini-alert warn d-none" id="drawWarning">
+                    <i class="bi bi-exclamation-triangle"></i><span></span>
+                  </div>
+
+                  <div class="option-box d-none" id="multiOptionWrap">
+                    <label class="switch-line">
+                      <input type="checkbox" id="allowMultipleCheck">
+                      <span class="switch-ui"></span>
+                      <span class="switch-text">
+                        <strong>Autoriser plusieurs filleuls par parrain</strong>
+                        <small>Si vous refusez, les filleuls excédentaires resteront sans parrain.</small>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div class="draw-rules">
+                    <h4><i class="bi bi-shield-check"></i> Règles appliquées</h4>
+                    <ul>
+                      <li>Un filleul ne reçoit qu'un seul parrain par tirage.</li>
+                      <li>Chaque parrain reçoit au maximum un filleul (par défaut).</li>
+                      <li>Le tirage est calculé une seule fois, puis révélé par l'animation.</li>
+                      <li>Les résultats sont conservés dans votre navigateur.</li>
+                    </ul>
+                  </div>
+
+                  <div class="big-actions">
+                    <button class="btn-grad btn-lg" id="btnStartDraw2">
+                      <i class="bi bi-shuffle"></i> Démarrer le binômage
+                    </button>
+                    <button class="btn-ghost btn-lg d-none" id="btnRestartDraw">
+                      <i class="bi bi-arrow-repeat"></i> Recommencer le tirage
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-5">
+              <div class="panel">
+                <div class="panel-head">
+                  <h3><i class="bi bi-list-check"></i> Participants non appariés</h3>
+                </div>
+                <div class="panel-body">
+                  <div class="unassigned-list" id="unassignedList"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+           VUE 5 — RÉSULTATS
+           ======================================================== -->
+        <section id="view-resultats" class="view d-none">
+          <div class="page-actions">
+            <div>
+              <h2 class="page-title">Résultats du binômage</h2>
+              <p class="page-desc"><span id="resultsCount">0</span> binôme(s) — recherchez, filtrez, exportez ou
+                imprimez.</p>
+            </div>
+            <div class="action-group">
+              <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="search" id="searchResults" class="form-control" placeholder="Rechercher un nom…">
+              </div>
+              <select class="form-select filter-select" id="filterGroup">
+                <option value="">Toutes les filières</option>
+              </select>
+              <button class="btn-ghost" id="btnExportCsv"><i class="bi bi-filetype-csv"></i> Exporter en CSV</button>
+              <button class="btn-grad" id="btnPrint"><i class="bi bi-printer"></i> Imprimer les résultats</button>
+            </div>
+          </div>
+
+          <div class="grid-pairs" id="gridResults"></div>
+
+          <div class="empty-state d-none" id="emptyResults">
+            <div class="empty-icon"><i class="bi bi-trophy"></i></div>
+            <h4>Aucun résultat à afficher</h4>
+            <p>Lancez d'abord un binômage pour générer les associations.</p>
+            <button class="btn-grad" id="btnStartDraw3"><i class="bi bi-shuffle"></i> Démarrer le binômage</button>
+          </div>
+
+          <!-- Zone imprimable -->
+          <div class="panel mt-4" id="printArea">
+            <div class="panel-head">
+              <h3><i class="bi bi-table"></i> Tableau récapitulatif</h3>
+              <span class="print-only print-header">BinômagePro — Relevé des binômes</span>
+            </div>
+            <div class="panel-body table-responsive">
+              <table class="table table-hover align-middle recap-table">
+                <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Parrain</th>
+                    <th>Identifiant</th>
+                    <th>Filière</th>
+                    <th>Filleul</th>
+                    <th>Identifiant</th>
+                    <th>Filière</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================================
+           VUE 6 — DONNÉES & SAUVEGARDE
+           ======================================================== -->
+        <section id="view-donnees" class="view d-none">
+          <div class="alert-custom">
+            <i class="bi bi-exclamation-octagon"></i>
+            <div>
+              <strong>Stockage 100 % local.</strong>
+              Vos données (participants, photos, résultats) sont conservées uniquement dans
+              <em>ce navigateur, sur cet ordinateur</em>. Elles ne sont pas synchronisées avec un
+              autre appareil et ne sont envoyées sur aucun serveur. Pensez à exporter une sauvegarde régulièrement.
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-lg-6">
+              <div class="panel h-100">
+                <div class="panel-head">
+                  <h3><i class="bi bi-save"></i> Sauvegarde &amp; restauration</h3>
+                </div>
+                <div class="panel-body">
+                  <p class="muted">Exportez l'ensemble des données (texte + photos) dans un fichier JSON, puis
+                    restaurez-le sur n'importe quel navigateur.</p>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button class="btn-grad" id="btnExportJson"><i class="bi bi-download"></i> Exporter une
+                      sauvegarde</button>
+                    <button class="btn-ghost" id="btnImportJson"><i class="bi bi-upload"></i> Restaurer une
+                      sauvegarde</button>
+                    <input type="file" id="jsonFileInput" accept="application/json,.json" class="d-none">
+                  </div>
+                  <div class="storage-info mt-4">
+                    <h4><i class="bi bi-hdd"></i> Utilisation du stockage</h4>
+                    <div class="storage-row"><span>Participants</span><b id="storageParticipants">0</b></div>
+                    <div class="storage-row"><span>Photos enregistrées</span><b id="storagePhotos">0</b></div>
+                    <div class="storage-row"><span>Binômes</span><b id="storagePairs">0</b></div>
+                    <div class="storage-row"><span>Poids approximatif</span><b id="storageWeight">0 Ko</b></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="panel h-100">
+                <div class="panel-head">
+                  <h3><i class="bi bi-trash3"></i> Zone dangereuse</h3>
+                </div>
+                <div class="panel-body">
+                  <p class="muted">Ces actions sont définitives. Une confirmation sera demandée avant chaque
+                    suppression.</p>
+                  <div class="danger-list">
+                    <div class="danger-item">
+                      <div>
+                        <strong>Réinitialiser toutes les données</strong>
+                        <small>Efface participants, photos et résultats de ce navigateur.</small>
+                      </div>
+                      <button class="btn-ghost danger" id="btnResetData"><i class="bi bi-trash3"></i>
+                        Réinitialiser</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+      <footer class="page-signature">créer par PRINCE HABIB BAMBA</footer>
+    </div>
+  </div>
+
+  <!-- ============================================================
+     MODALES
+     ============================================================ -->
+
+  <!-- Formulaire participant (ajout / modification) -->
+  <div class="modal fade" id="participantModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content modal-custom" id="participantForm" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="participantModalTitle">Ajouter un participant</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="pRole">
+          <input type="hidden" id="pEditId">
+
+          <div class="photo-upload">
+            <div class="photo-preview" id="pPhotoPreview">
+              <i class="bi bi-person"></i>
+              <img alt="Aperçu de la photo" id="pPhotoImg" class="d-none">
+            </div>
+            <div class="photo-actions">
+              <label class="btn-ghost" for="pPhotoInput"><i class="bi bi-image"></i> Importer une photo</label>
+              <input type="file" id="pPhotoInput" accept="image/*" class="d-none">
+              <button type="button" class="btn-ghost danger d-none" id="pPhotoRemove"><i class="bi bi-x-lg"></i>
+                Retirer</button>
+              <small class="muted">JPG, PNG, WEBP — redimensionnée automatiquement.</small>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom" for="pFirstName">Prénom <span>*</span></label>
+              <input type="text" class="form-control custom-input" id="pFirstName" required maxlength="60"
+                placeholder="Ex. Amina">
+              <div class="invalid-msg">Le prénom est obligatoire.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom" for="pLastName">Nom <span>*</span></label>
+              <input type="text" class="form-control custom-input" id="pLastName" required maxlength="60"
+                placeholder="Ex. Benali">
+              <div class="invalid-msg">Le nom est obligatoire.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom" for="pIdentifier">Identifiant <em>(facultatif)</em></label>
+              <input type="text" class="form-control custom-input" id="pIdentifier" maxlength="40"
+                placeholder="Ex. P-014">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom" for="pGroup">Filière / classe <em>(facultatif)</em></label>
+              <input type="text" class="form-control custom-input" id="pGroup" maxlength="60"
+                placeholder="Ex. Master 2 Informatique">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn-grad" id="btnSubmitParticipant"><i class="bi bi-check-lg"></i>
+            Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Ajout rapide (plusieurs participants) -->
+  <div class="modal fade" id="multiModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content modal-custom" id="multiForm" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="multiModalTitle">Ajout rapide</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="multiRole">
+          <label class="form-label-custom" for="multiText">Une ligne par participant</label>
+          <textarea class="form-control custom-input" id="multiText" rows="8"
+            placeholder="Amina Benali; Master 2; P-014&#10;Lucas Moreau; Licence 3&#10;Sofia Ricci"></textarea>
+          <small class="muted">Format : <code>Prénom Nom; filière; identifiant</code> — la filière et l'identifiant sont
+            facultatifs.</small>
+          <div class="mini-alert mt-3"><i class="bi bi-info-circle"></i><span>Les doublons (prénom + nom identiques)
+              seront automatiquement ignorés.</span></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn-grad"><i class="bi bi-plus-lg"></i> Ajouter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Import CSV -->
+  <div class="modal fade" id="csvModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <form class="modal-content modal-custom" id="csvForm" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="csvModalTitle">Importer une liste CSV</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="csvRole">
+          <label class="form-label-custom" for="csvFile">Fichier CSV</label>
+          <input type="file" class="form-control custom-input" id="csvFile" accept=".csv,text/csv" required>
+          <small class="muted">
+            Colonnes attendues : <code>prenom, nom, identifiant, filiere</code> (l'en-tête est facultative,
+            séparateur <code>,</code> ou <code>;</code>).
+          </small>
+
+          <div class="d-none mt-3" id="csvPreviewWrap">
+            <h6 class="preview-title">Aperçu des 5 premières lignes</h6>
+            <div class="table-responsive">
+              <table class="table table-sm recap-table">
+                <thead>
+                  <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Identifiant</th>
+                    <th>Filière</th>
+                  </tr>
+                </thead>
+                <tbody id="csvPreviewBody"></tbody>
+              </table>
+            </div>
+            <div class="mini-alert"><i class="bi bi-info-circle"></i><span id="csvInfo"></span></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn-grad" id="btnConfirmCsv"><i class="bi bi-upload"></i> Importer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirmation générique -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-confirm">
+      <div class="modal-content modal-custom">
+        <div class="modal-body text-center py-4">
+          <div class="confirm-icon" id="confirmIcon"><i class="bi bi-question-circle"></i></div>
+          <h5 class="mt-3" id="confirmTitle">Confirmation</h5>
+          <p class="muted mb-0" id="confirmMessage"></p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn-ghost" data-bs-dismiss="modal" id="confirmCancel">Annuler</button>
+          <button type="button" class="btn-grad" id="confirmOk">Confirmer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation du tirage -->
+  <div class="modal fade" id="drawModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-custom">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-shuffle"></i> Lancer le tirage au sort</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="recap-inline" id="drawSummaryText"></div>
+          <div class="mini-alert warn d-none" id="drawWarnBox">
+            <i class="bi bi-exclamation-triangle"></i><span></span>
+          </div>
+          <div class="option-box d-none" id="allowMultipleWrap">
+            <label class="switch-line">
+              <input type="checkbox" id="allowMultipleCheckModal">
+              <span class="switch-ui"></span>
+              <span class="switch-text">
+                <strong>Attribuer plusieurs filleuls à un même parrain</strong>
+                <small>Cochez pour apparier tous les filleuls, sinon les excédentaires resteront sans parrain.</small>
+              </span>
+            </label>
+          </div>
+          <div class="mini-alert"><i class="bi bi-shield-check"></i>
+            <span>Le résultat est calculé immédiatement, puis révélé par l'animation. Aucune donnée ne quitte votre
+              navigateur.</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn-grad" id="btnConfirmDraw"><i class="bi bi-play-fill"></i> Lancer le
+            tirage</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Animation de tirage -->
+  <div class="modal fade" id="animModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom anim-content">
+        <div class="modal-body text-center">
+          <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+          <div class="anim-stage" id="animStage">
+            <div class="anim-label" id="animStatus">Tirage en cours…</div>
+            <div class="slot-machine">
+              <div class="slot-glow"></div>
+              <div class="slot-frame">
+                <img id="animSlotImg" alt="" class="slot-img">
+                <div class="slot-name" id="animSlotName"></div>
+              </div>
+            </div>
+            <div class="progress-track anim-progress">
+              <div class="progress-fill" id="animProgressFill" style="width:0%"></div>
+            </div>
+            <div class="anim-progress-text" id="animProgressText">Mélange des listes…</div>
+          </div>
+          <div class="anim-reveal d-none" id="animReveal"></div>
+        </div>
+        <div class="modal-footer d-none" id="animFooter">
+          <button type="button" class="btn-ghost" data-bs-dismiss="modal">Fermer</button>
+          <button type="button" class="btn-grad" id="btnAnimGoResults"><i class="bi bi-trophy"></i> Voir les
+            résultats</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteneur des notifications -->
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
