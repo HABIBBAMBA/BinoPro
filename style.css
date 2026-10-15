@@ -2407,8 +2407,9 @@ code {
   padding: 48px clamp(24px, 7vw, 112px) 76px;
   color: #fff;
   background:
-    radial-gradient(ellipse at 77% 45%, rgba(83, 73, 173, .36), transparent 38%),
-    radial-gradient(ellipse at 8% 100%, rgba(31, 89, 135, .28), transparent 36%),
+    linear-gradient(90deg, rgba(16, 24, 40, .76) 0%, rgba(16, 24, 40, .48) 46%, rgba(16, 24, 40, .18) 100%),
+    linear-gradient(0deg, rgba(16, 24, 40, .16), rgba(16, 24, 40, .08)),
+    url("lancement.jpg") center / cover no-repeat,
     #101828;
   opacity: 1;
   visibility: visible;
