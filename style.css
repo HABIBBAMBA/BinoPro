@@ -2530,7 +2530,7 @@ code {
   background: linear-gradient(90deg, var(--welcome-mint), var(--welcome-cream), var(--welcome-coral));
   transform: scaleX(0);
   transform-origin: left;
-  animation: welcome-loading 1.9s cubic-bezier(.2, .72, .25, 1) .15s forwards;
+  animation: welcome-loading 5.7s cubic-bezier(.2, .72, .25, 1) .15s forwards;
 }
 
 .welcome-loading p {

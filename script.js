@@ -1472,7 +1472,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   startHeroPhotoCarousel();
   renderAll();
 
-  await wait(Math.max(0, 1900 - (performance.now() - welcomeStartedAt)));
+  await wait(Math.max(0, 6000 - (performance.now() - welcomeStartedAt)));
   dismissWelcomeScreen();
 });
 
