@@ -826,29 +826,47 @@ function openMultiModal(role) {
   bootstrap.Modal.getOrCreateInstance(document.getElementById('multiModal')).show();
 }
 
+function parseMultiParticipantLine(line) {
+  const parts = line.split(/[;|\t]/).map(part => part.trim());
+  let firstName;
+  let lastName;
+  let group;
+  let identifier;
+
+  if (parts.length > 1 && !/\s/.test(parts[0])) {
+    [firstName, lastName, group = '', identifier = ''] = parts;
+  } else {
+    const nameParts = (parts[0] || '').split(/\s+/).filter(Boolean);
+    if (nameParts.length < 2) return null;
+    firstName = nameParts.shift();
+    lastName = nameParts.join(' ');
+    group = parts[1] || '';
+    identifier = parts[2] || '';
+  }
+
+  if (!firstName || !lastName) return null;
+  return { firstName, lastName, group, identifier };
+}
+
 document.getElementById('multiForm').addEventListener('submit', (event) => {
   event.preventDefault();
   const role = document.getElementById('multiRole').value;
   const list = listByRole(role);
   const lines = document.getElementById('multiText').value
-    .split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    .split(/\r\n?|\n/).map(l => l.trim()).filter(Boolean);
 
   if (!lines.length) {
     showToast('Saisissez au moins une ligne.', 'error');
     return;
   }
 
-  let added = 0, skipped = 0;
+  let added = 0, duplicates = 0, invalid = 0;
   for (const line of lines) {
-    const parts = line.split(/[;|]/).map(x => x.trim());
-    const nameParts = parts[0].split(/\s+/).filter(Boolean);
-    if (nameParts.length < 2) { skipped++; continue; }
-    const firstName = nameParts.shift();
-    const lastName = nameParts.join(' ');
-    const group = parts[1] || '';
-    const identifier = parts[2] || '';
+    const participantData = parseMultiParticipantLine(line);
+    if (!participantData) { invalid++; continue; }
+    const { firstName, lastName, group, identifier } = participantData;
 
-    if (isDuplicate(list, firstName, lastName)) { skipped++; continue; }
+    if (isDuplicate(list, firstName, lastName)) { duplicates++; continue; }
 
     list.push({ id: uid(role === 'sponsor' ? 'parrain' : 'filleul'), firstName, lastName, identifier, group, hasPhoto: false });
     added++;
@@ -858,8 +876,15 @@ document.getElementById('multiForm').addEventListener('submit', (event) => {
   renderAll();
   bootstrap.Modal.getInstance(document.getElementById('multiModal'))?.hide();
 
-  if (added) showToast(`${added} participant(s) ajouté(s)${skipped ? `, ${skipped} ignoré(s)` : ''}.`, 'success');
-  else showToast('Aucun participant valide à ajouter (format ou doublons).', 'error');
+  if (added) {
+    const details = [
+      duplicates && `${duplicates} doublon(s) ignoré(s)`,
+      invalid && `${invalid} ligne(s) invalide(s)`
+    ].filter(Boolean);
+    showToast(`${added} participant(s) ajouté(s)${details.length ? ` ; ${details.join(' ; ')}` : ''}.`, 'success');
+  } else {
+    showToast(`Aucun participant ajouté : ${invalid} ligne(s) invalide(s), ${duplicates} doublon(s).`, 'error');
+  }
 });
 
 /* ---------- Import CSV ---------- */
