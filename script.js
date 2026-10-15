@@ -1366,7 +1366,22 @@ async function resetAllData() {
 /* ============================================================
    9b. INITIALISATION & ÉVÉNEMENTS
    ============================================================ */
+const welcomeStartedAt = performance.now();
+
+function dismissWelcomeScreen() {
+  const welcomeScreen = document.getElementById('welcomeScreen');
+  if (!welcomeScreen || welcomeScreen.classList.contains('is-leaving')) return;
+
+  welcomeScreen.classList.add('is-leaving');
+  const appShell = document.getElementById('appShell');
+  appShell.inert = false;
+  appShell.removeAttribute('aria-hidden');
+  setTimeout(() => welcomeScreen.remove(), 650);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('welcomeEnter').addEventListener('click', dismissWelcomeScreen);
+
   await PhotoStore.init();
   await loadState();
   await purgeLegacyDemoData();
@@ -1456,6 +1471,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   startHeroPhotoCarousel();
   renderAll();
+
+  await wait(Math.max(0, 1900 - (performance.now() - welcomeStartedAt)));
+  dismissWelcomeScreen();
 });
 
 function startHeroPhotoCarousel() {

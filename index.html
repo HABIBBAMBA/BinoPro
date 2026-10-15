@@ -7,7 +7,7 @@
   <meta name="description"
     content="BinoPro — créez des binômes de parrainage simplement, équitablement et en toute confidentialité.">
   <meta name="theme-color" content="#3a0ca3">
-  <title>BinoPro — le lien commence ici</title>
+  <title>BinoPro.com</title>
   <link rel="icon" type="image/png" href="logo.png">
 
   <!-- Typographie éditoriale -->
@@ -26,7 +26,50 @@
 </head>
 
 <body>
-  <div class="app-shell">
+  <section class="welcome-screen" id="welcomeScreen" aria-labelledby="welcomeTitle" aria-describedby="welcomeDescription">
+    <div class="welcome-orbit welcome-orbit-one" aria-hidden="true"></div>
+    <div class="welcome-orbit welcome-orbit-two" aria-hidden="true"></div>
+    <span class="welcome-spark welcome-spark-one" aria-hidden="true">✳</span>
+    <span class="welcome-spark welcome-spark-two" aria-hidden="true">✦</span>
+    <span class="welcome-spark welcome-spark-three" aria-hidden="true">✳</span>
+
+    <div class="welcome-layout">
+      <div class="welcome-copy">
+        <div class="welcome-brand">
+          <span class="welcome-logo"><img src="logo.png" alt=""></span>
+          <span>BinoPro</span>
+        </div>
+        <p class="welcome-kicker"><span></span> Le début d’une belle aventure</p>
+        <h1 id="welcomeTitle">Prêts pour<br>de belles <em>rencontres&nbsp;?</em></h1>
+        <p class="welcome-description" id="welcomeDescription">
+          On prépare votre espace. Quelques secondes, et la magie du binômage peut commencer.
+        </p>
+        <div class="welcome-loading" aria-label="Chargement de BinoPro">
+          <div class="welcome-loading-track"><span></span></div>
+          <p><span class="welcome-loading-dot"></span> On mélange les bonnes vibes…</p>
+        </div>
+        <button class="welcome-enter" id="welcomeEnter" type="button">
+          Entrer dans BinoPro <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="welcome-art" aria-hidden="true">
+        <div class="welcome-art-halo"></div>
+        <div class="welcome-orbit-ring welcome-ring-outer"></div>
+        <div class="welcome-orbit-ring welcome-ring-inner"></div>
+        <div class="welcome-person welcome-person-one"><i class="bi bi-person-fill"></i></div>
+        <div class="welcome-person welcome-person-two"><i class="bi bi-person-fill"></i></div>
+        <div class="welcome-person welcome-person-three"><i class="bi bi-person-fill"></i></div>
+        <div class="welcome-person welcome-person-four"><i class="bi bi-person-fill"></i></div>
+        <div class="welcome-heart"><i class="bi bi-heart-fill"></i></div>
+        <span class="welcome-art-caption">Les liens commencent ici</span>
+      </div>
+    </div>
+
+    <div class="welcome-footer"><span>JUSTE</span><i></i><span>HUMAIN</span><i></i><span>ENSEMBLE</span></div>
+  </section>
+
+  <div class="app-shell" id="appShell" inert aria-hidden="true">
 
     <!-- ============================================================
        SIDEBAR — navigation principale
